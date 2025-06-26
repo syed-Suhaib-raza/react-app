@@ -1,18 +1,25 @@
-import {config} from 'dotenv';
+import { config } from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
 import userRoute from './routes/users.js';
 import cors from 'cors';
-config({path:'../.env'});
-console.log(process.env.API_URL)
+
+// Load environment variables (adjust path if needed)
+config({ path: '../.env' });
+
 const app = express();
-app.use(cors());
 const port = process.env.PORT || 8000;
+
+app.use(cors());
 app.use(bodyParser.json());
-app.use('/users',userRoute);
-app.get('/', (req, res) =>{
-    res.send('On the Hompepage');
+
+// Routes
+app.use('/users', userRoute);
+
+app.get('/', (req, res) => {
+    res.send('On the Homepage');
 });
-app.listen(port, ()=>{
+
+app.listen(port, () => {
     console.log(`Server running on port ${port} ...`);
-})
+});

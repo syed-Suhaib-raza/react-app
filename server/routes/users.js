@@ -1,37 +1,58 @@
 import express from 'express';
-import { createOp, updateOp, deleteOp, findAOp, findOp, connectToCluster } from '../mongFunc.js';
+import { createOp, updateOp, deleteOp, findAOp, findOp } from '../mongfunc.js';
+
 const router = express.Router();
-  router.get('/', (req,res) =>{
+
+router.get('/', async (req, res) => {
     console.log("GET API hit");
-    users = findAOp();
-    res.send(users);
-  })
+    try {
+        const users = await findAOp();
+        res.json(users);
+    } catch (error) {
+        res.status(500).send("Error retrieving users");
+    }
+});
 
-  router.post('/', (req,res) =>{
-    const user = req.body;
-    createOp(user);
-    res.send(`${user.first_name} has been added to the database`)
-  })
+router.post('/', async (req, res) => {
+    try {
+        const user = req.body;
+        await createOp(user);
+        res.send(`${user.name} has been added to the database`);
+    } catch (error) {
+        res.status(500).send("Error adding user");
+    }
+});
 
-  router.get('/:first_name', (req, res) => {
-    console.log("NEW API HIT")
-    const nId = req.params.first_name;
-    us = findOp(nId)
-    res.send(us);
-  })
+router.get('/:first_name', async (req, res) => {
+    console.log("GET specific user API hit");
+    try {
+        const name = req.params.first_name;
+        const user = await findOp(name);
+        res.json(user);
+    } catch (error) {
+        res.status(500).send("Error fetching user");
+    }
+});
 
-  router.delete('/:first_name',(req, res) => {
-    const reN = req.params.first_name;
-    deleteOp(reN)
-    res.send("User has been deleted");
-  })
+router.delete('/:first_name', async (req, res) => {
+    try {
+        const name = req.params.first_name;
+        await deleteOp(name);
+        res.send("User has been deleted");
+    } catch (error) {
+        res.status(500).send("Error deleting user");
+    }
+});
 
-  router.patch('/:first_name', (req, res) =>{
-    const reN = req.params.first_name;
-    const item = req.body;
-    updateOp(reN,item)
-    res.send(`Changes made to ${reN}`);
+router.patch('/:first_name', async (req, res) => {
+    try {
+        const name = req.params.first_name;
+        const updates = req.body;
+        await updateOp(name, updates);
+        res.send(`Changes made to ${name}`);
+    } catch (error) {
+        res.status(500).send("Error updating user");
+    }
+});
 
-  })
-
-  export default router
+export default router;
