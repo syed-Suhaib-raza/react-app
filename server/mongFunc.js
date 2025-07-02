@@ -51,7 +51,7 @@ export async function findOp(name) {
         mongoClient = await connectToCluster(uri);
         const db = mongoClient.db('users');
         const collection = db.collection('people');
-        return await collection.find({ "first_name":name }).toArray().json();
+        return await collection.findOne({ "first_name":name });
     } finally {
         await mongoClient.close();
     }

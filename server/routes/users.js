@@ -1,5 +1,5 @@
 import express from 'express';
-import { createOp, updateOp, deleteOp, findAOp, findOp } from '../mongfunc.js';
+import { createOp, updateOp, deleteOp, findAOp, findOp } from '../mongFunc.js';
 
 const router = express.Router();
 
